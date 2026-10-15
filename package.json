@@ -1,0 +1,13 @@
+{
+  "name": "chess-arena-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"cyan,magenta\" \"npm run dev --prefix Backend\" \"npm run dev --prefix frontend\"",
+    "start:backend": "npm run dev --prefix Backend",
+    "start:frontend": "npm run dev --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
