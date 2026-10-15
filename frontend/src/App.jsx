@@ -27,7 +27,7 @@ import {
   Flag
 } from 'lucide-react';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5001';
+const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || 'https://chessarena-backend-wx0w.onrender.com').replace(/\/+$/, '');
 
 const PIECE_VALUES = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
 
