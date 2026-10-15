@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+:root {
+  color-scheme: only light; /* Prevents mobile browsers like Samsung Internet/Chrome from auto-inverting SVGs */
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
@@ -7,4 +11,14 @@ body {
   background-color: #020617;
   color: #f8fafc;
   overflow-x: hidden;
+}
+
+/* Radiant Gold for White Pieces (wP, wN, wB, wR, wQ, wK) */
+.piece-gold {
+  filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.7)) sepia(0.8) saturate(3.5) hue-rotate(5deg) brightness(1.1) !important;
+}
+
+/* Vibrant Cyber Emerald for Black Pieces (bP, bN, bB, bR, bQ, bK) */
+.piece-emerald {
+  filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.9)) invert(0.85) sepia(1) saturate(5) hue-rotate(95deg) brightness(1.2) contrast(1.2) !important;
 }
