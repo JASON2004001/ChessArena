@@ -111,7 +111,7 @@ export default function App() {
       setHintSquares({});
       setPendingPromotion(null);
       setEndGameModal(null);
-      setGameStatus(color === 'w' ? 'Match started! Your turn (White)' : 'Match started! Opponent turn (White)');
+      setGameStatus(color === 'w' ? 'Match started! Your turn (Gold)' : 'Match started! Opponent turn (Gold)');
     });
 
     socket.on('clock_tick', ({ whiteTimer, blackTimer }) => {
@@ -200,12 +200,12 @@ export default function App() {
 
   const updateTurnStatus = (currentGame) => {
     if (currentGame.isCheckmate()) {
-      const winner = currentGame.turn() === 'w' ? 'Black' : 'White';
+      const winner = currentGame.turn() === 'w' ? 'Emerald' : 'Gold';
       setGameStatus(`Checkmate! ${winner} wins! 🏆`);
     } else if (currentGame.isDraw()) {
       setGameStatus('Draw / Stalemate!');
     } else {
-      const turnName = currentGame.turn() === 'w' ? 'White' : 'Black';
+      const turnName = currentGame.turn() === 'w' ? 'Gold (White)' : 'Emerald (Black)';
       const checkText = currentGame.inCheck() ? ' - CHECK!' : '';
       setGameStatus(`${turnName} to move${checkText}`);
     }
@@ -563,7 +563,6 @@ export default function App() {
     }, 15000);
   };
 
-  // Exit / Menu Reset: notifies backend if in multiplayer
   const resetToMenu = () => {
     clearTimeout(searchTimerRef.current);
     setIsSearching(false);
@@ -587,6 +586,24 @@ export default function App() {
     setGameStatus('White to move');
   };
 
+  // Custom piece styling (Gold vs Emerald)
+  const customPieces = {
+    // White Pieces -> Radiant Gold
+    wP: ({ squareWidth }) => <div className="piece-gold w-full h-full flex items-center justify-center text-4xl select-none">♙</div>,
+    wN: ({ squareWidth }) => <div className="piece-gold w-full h-full flex items-center justify-center text-4xl select-none">♘</div>,
+    wB: ({ squareWidth }) => <div className="piece-gold w-full h-full flex items-center justify-center text-4xl select-none">♗</div>,
+    wR: ({ squareWidth }) => <div className="piece-gold w-full h-full flex items-center justify-center text-4xl select-none">♖</div>,
+    wQ: ({ squareWidth }) => <div className="piece-gold w-full h-full flex items-center justify-center text-4xl select-none">♕</div>,
+    wK: ({ squareWidth }) => <div className="piece-gold w-full h-full flex items-center justify-center text-4xl select-none">♔</div>,
+    // Black Pieces -> Vibrant Cyber Emerald
+    bP: ({ squareWidth }) => <div className="piece-emerald w-full h-full flex items-center justify-center text-4xl select-none">♟</div>,
+    bN: ({ squareWidth }) => <div className="piece-emerald w-full h-full flex items-center justify-center text-4xl select-none">♞</div>,
+    bB: ({ squareWidth }) => <div className="piece-emerald w-full h-full flex items-center justify-center text-4xl select-none">♝</div>,
+    bR: ({ squareWidth }) => <div className="piece-emerald w-full h-full flex items-center justify-center text-4xl select-none">♜</div>,
+    bQ: ({ squareWidth }) => <div className="piece-emerald w-full h-full flex items-center justify-center text-4xl select-none">♛</div>,
+    bK: ({ squareWidth }) => <div className="piece-emerald w-full h-full flex items-center justify-center text-4xl select-none">♚</div>,
+  };
+
   const customSquareStyles = {
     ...lastMoveSquares,
     ...hintSquares,
@@ -603,13 +620,13 @@ export default function App() {
     ...possibleMoves.reduce((acc, moveObj) => {
       if (moveObj.isCapture) {
         acc[moveObj.square] = {
-          background: 'radial-gradient(circle, transparent 60%, rgba(34, 197, 94, 0.9) 62%, rgba(34, 197, 94, 0.9) 78%, transparent 80%)',
+          background: 'radial-gradient(circle, transparent 60%, rgba(16, 185, 129, 0.95) 62%, rgba(16, 185, 129, 0.95) 78%, transparent 80%)',
           borderRadius: '50%',
           cursor: 'pointer',
         };
       } else {
         acc[moveObj.square] = {
-          background: 'radial-gradient(circle, rgba(34, 197, 94, 0.9) 24%, transparent 26%)',
+          background: 'radial-gradient(circle, rgba(16, 185, 129, 0.95) 24%, transparent 26%)',
           borderRadius: '50%',
           cursor: 'pointer',
         };
@@ -684,17 +701,17 @@ export default function App() {
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <button
                   onClick={() => { setPlayerColor('w'); setMode('level_select'); }}
-                  className="py-2.5 sm:py-3 px-3 bg-emerald-950/40 hover:bg-emerald-900/50 text-white font-bold text-xs rounded-xl sm:rounded-2xl border border-emerald-700/60 hover:border-emerald-500 transition shadow-sm flex items-center justify-center gap-1.5 sm:gap-2"
+                  className="py-2.5 sm:py-3 px-3 bg-emerald-950/40 hover:bg-emerald-900/50 text-amber-300 font-bold text-xs rounded-xl sm:rounded-2xl border border-amber-500/50 hover:border-amber-400 transition shadow-sm flex items-center justify-center gap-1.5 sm:gap-2"
                 >
-                  <span>Play White</span>
-                  <span className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-white shadow-inner inline-block"></span>
+                  <span>Play Gold</span>
+                  <span className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-amber-400 shadow-inner inline-block"></span>
                 </button>
                 <button
                   onClick={() => { setPlayerColor('b'); setMode('level_select'); }}
-                  className="py-2.5 sm:py-3 px-3 bg-emerald-950/40 hover:bg-emerald-900/50 text-white font-bold text-xs rounded-xl sm:rounded-2xl border border-emerald-700/60 hover:border-emerald-500 transition shadow-sm flex items-center justify-center gap-1.5 sm:gap-2"
+                  className="py-2.5 sm:py-3 px-3 bg-emerald-950/40 hover:bg-emerald-900/50 text-emerald-400 font-bold text-xs rounded-xl sm:rounded-2xl border border-emerald-500/50 hover:border-emerald-400 transition shadow-sm flex items-center justify-center gap-1.5 sm:gap-2"
                 >
-                  <span>Play Black</span>
-                  <span className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-slate-800 border border-slate-600 shadow-inner inline-block"></span>
+                  <span>Play Emerald</span>
+                  <span className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-emerald-400 shadow-inner inline-block"></span>
                 </button>
               </div>
             </div>
@@ -757,7 +774,7 @@ export default function App() {
                 <ChevronLeft className="w-4 h-4" /> Back
               </button>
               <span className="text-[11px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-950 border border-emerald-700/60 text-amber-300">
-                Playing as {playerColor === 'w' ? 'White ⚪' : 'Black ⚫'}
+                Playing as {playerColor === 'w' ? 'Gold 🟡' : 'Emerald 🟢'}
               </span>
             </div>
 
@@ -790,15 +807,15 @@ export default function App() {
             {/* MULTIPLAYER CLOCKS BAR */}
             {mode === 'multiplayer' && (
               <div className="w-full max-w-[min(92vw,500px,68vh)] flex items-center justify-between mb-2 sm:mb-3 px-1 gap-2">
-                {/* Black Clock */}
+                {/* Black (Emerald) Clock */}
                 <div className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl border backdrop-blur-md transition ${
                   game.turn() === 'b' 
-                    ? 'bg-amber-500/20 border-amber-400 text-amber-300 shadow-[0_0_15px_rgba(251,191,36,0.25)]' 
+                    ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.35)]' 
                     : 'bg-black/40 border-slate-800 text-slate-400'
                 }`}>
-                  <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                  <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-emerald-400" />
                   <div className="flex flex-col leading-none">
-                    <span className="text-[8px] sm:text-[9px] uppercase font-bold tracking-wider truncate max-w-[70px] sm:max-w-[100px]">
+                    <span className="text-[8px] sm:text-[9px] uppercase font-bold tracking-wider truncate max-w-[70px] sm:max-w-[100px] text-emerald-300">
                       {playerColor === 'b' ? `${currentUser} (You)` : opponentName}
                     </span>
                     <span className="text-xs sm:text-sm font-black font-mono mt-0.5">{formatTimer(blackTime)}</span>
@@ -814,15 +831,15 @@ export default function App() {
                   <Flag className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> Forfeit
                 </button>
 
-                {/* White Clock */}
+                {/* White (Gold) Clock */}
                 <div className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl border backdrop-blur-md transition ${
                   game.turn() === 'w' 
-                    ? 'bg-amber-500/20 border-amber-400 text-amber-300 shadow-[0_0_15px_rgba(251,191,36,0.25)]' 
+                    ? 'bg-amber-500/20 border-amber-400 text-amber-300 shadow-[0_0_15px_rgba(251,191,36,0.35)]' 
                     : 'bg-black/40 border-slate-800 text-slate-400'
                 }`}>
-                  <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                  <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-amber-400" />
                   <div className="flex flex-col leading-none">
-                    <span className="text-[8px] sm:text-[9px] uppercase font-bold tracking-wider truncate max-w-[70px] sm:max-w-[100px]">
+                    <span className="text-[8px] sm:text-[9px] uppercase font-bold tracking-wider truncate max-w-[70px] sm:max-w-[100px] text-amber-300">
                       {playerColor === 'w' ? `${currentUser} (You)` : opponentName}
                     </span>
                     <span className="text-xs sm:text-sm font-black font-mono mt-0.5">{formatTimer(whiteTime)}</span>
@@ -839,15 +856,16 @@ export default function App() {
               }}
               className="aspect-square rounded-2xl p-2 sm:p-3 bg-gradient-to-b from-[#4d2816] via-[#351a0d] to-[#241107] shadow-[0_15px_40px_rgba(0,0,0,0.85)] border-2 sm:border-4 border-[#5d321d] flex items-center justify-center shrink-0"
             >
-              <div className="w-full h-full rounded-lg overflow-hidden shadow-inner">
+              <div className="w-full h-full rounded-lg overflow-hidden shadow-inner bg-[#1e293b]">
                 <Chessboard
                   position={game.fen()}
                   onPieceDrop={handlePieceDrop}
                   onSquareClick={handleSquareClick}
                   boardOrientation={playerColor === 'b' ? 'black' : 'white'}
+                  customPieces={customPieces}
                   customSquareStyles={customSquareStyles}
-                  customDarkSquareStyle={{ backgroundColor: '#181b1f' }}
-                  customLightSquareStyle={{ backgroundColor: '#f1ede4' }}
+                  customDarkSquareStyle={{ backgroundColor: '#1e2530' }}
+                  customLightSquareStyle={{ backgroundColor: '#cbd5e1' }}
                   animationDuration={200}
                 />
               </div>
@@ -1026,28 +1044,28 @@ export default function App() {
                 onClick={() => completeMove(pendingPromotion.from, pendingPromotion.to, 'q')}
                 className="py-2 sm:py-3 px-2 bg-gradient-to-b from-[#d97724] to-[#7c3a0e] hover:from-[#f59e0b] hover:to-[#9a3412] border-2 border-amber-300/80 rounded-xl sm:rounded-2xl flex flex-col items-center justify-center transition active:scale-95 shadow-md group"
               >
-                <span className="text-2xl sm:text-3xl text-amber-100 group-hover:scale-110 transition">♛</span>
+                <span className="text-2xl sm:text-3xl text-amber-200 group-hover:scale-110 transition">♛</span>
                 <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-amber-100 mt-1">Queen</span>
               </button>
               <button
                 onClick={() => completeMove(pendingPromotion.from, pendingPromotion.to, 'r')}
                 className="py-2 sm:py-3 px-2 bg-gradient-to-b from-[#d97724] to-[#7c3a0e] hover:from-[#f59e0b] hover:to-[#9a3412] border-2 border-amber-300/80 rounded-xl sm:rounded-2xl flex flex-col items-center justify-center transition active:scale-95 shadow-md group"
               >
-                <span className="text-2xl sm:text-3xl text-amber-100 group-hover:scale-110 transition">♜</span>
+                <span className="text-2xl sm:text-3xl text-amber-200 group-hover:scale-110 transition">♜</span>
                 <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-amber-100 mt-1">Rook</span>
               </button>
               <button
                 onClick={() => completeMove(pendingPromotion.from, pendingPromotion.to, 'b')}
                 className="py-2 sm:py-3 px-2 bg-gradient-to-b from-[#d97724] to-[#7c3a0e] hover:from-[#f59e0b] hover:to-[#9a3412] border-2 border-amber-300/80 rounded-xl sm:rounded-2xl flex flex-col items-center justify-center transition active:scale-95 shadow-md group"
               >
-                <span className="text-2xl sm:text-3xl text-amber-100 group-hover:scale-110 transition">♝</span>
+                <span className="text-2xl sm:text-3xl text-amber-200 group-hover:scale-110 transition">♝</span>
                 <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-amber-100 mt-1">Bishop</span>
               </button>
               <button
                 onClick={() => completeMove(pendingPromotion.from, pendingPromotion.to, 'n')}
                 className="py-2 sm:py-3 px-2 bg-gradient-to-b from-[#d97724] to-[#7c3a0e] hover:from-[#f59e0b] hover:to-[#9a3412] border-2 border-amber-300/80 rounded-xl sm:rounded-2xl flex flex-col items-center justify-center transition active:scale-95 shadow-md group"
               >
-                <span className="text-2xl sm:text-3xl text-amber-100 group-hover:scale-110 transition">♞</span>
+                <span className="text-2xl sm:text-3xl text-amber-200 group-hover:scale-110 transition">♞</span>
                 <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-amber-100 mt-1">Knight</span>
               </button>
             </div>
@@ -1087,43 +1105,4 @@ export default function App() {
                 <>
                   <button
                     onClick={() => handleStartBotGame(botLevel)}
-                    className="py-2.5 sm:py-3 px-2 bg-gradient-to-b from-[#3a2010] to-[#1f0f06] hover:bg-emerald-900 border-2 border-[#a16207] rounded-xl sm:rounded-2xl flex items-center justify-center gap-1.5 text-xs font-bold text-amber-200 transition active:scale-95"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" /> Restart
-                  </button>
-                  <button
-                    onClick={() => handleStartBotGame(Math.min(10, botLevel + 1))}
-                    className="py-2.5 sm:py-3 px-2 bg-gradient-to-r from-[#d95b00] to-[#b34700] hover:from-[#f56c0b] hover:to-[#cc5200] border-2 border-amber-400 rounded-xl sm:rounded-2xl flex items-center justify-center gap-1.5 text-xs font-black text-white shadow-lg transition active:scale-95"
-                  >
-                    <TrendingUp className="w-3.5 h-3.5" /> Next Level
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={mode === 'bot' ? () => handleStartBotGame(botLevel) : resetToMenu}
-                    className="py-2.5 sm:py-3 px-2 bg-gradient-to-b from-[#d97724] to-[#7c3a0e] hover:from-[#f59e0b] hover:to-[#9a3412] border-2 border-amber-400/80 rounded-xl sm:rounded-2xl flex items-center justify-center gap-1.5 text-xs font-black text-white shadow-md transition active:scale-95"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" /> {mode === 'bot' ? 'Restart' : 'Play Again'}
-                  </button>
-                  <button
-                    onClick={resetToMenu}
-                    className="py-2.5 sm:py-3 px-2 bg-emerald-950/60 hover:bg-emerald-900 border-2 border-emerald-700/60 rounded-xl sm:rounded-2xl flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-200 transition active:scale-95"
-                  >
-                    <Menu className="w-3.5 h-3.5" /> Menu
-                  </button>
-                </>
-              )}
-            </div>
-
-          </div>
-        </div>
-      )}
-
-      {/* Footer */}
-      <footer className="py-1.5 sm:py-2 text-center text-[9px] sm:text-[10px] text-emerald-600/70">
-        ChessArena • Responsive Multiplatform Engine
-      </footer>
-    </div>
-  );
-}
+                    className="py-2.5 sm:py-3 px-2 bg-gradient-to-b from-[#3a2010] to-[#1f0f06] hover:bg-emerald-9
